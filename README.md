@@ -22,30 +22,3 @@ cp backend/.env.example backend/.env
 ```
 
 Os segredos `PI_ADMIN_SECRET` e `PI_SESSION_SECRET` têm de ser iguais no backend e no Raspberry Pi.
-
-## Executar
-
-Backend:
-
-```bash
-cd backend
-npm install
-npm start
-```
-
-Frontend:
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Raspberry Pi. O `main.py` não carrega o `.env` sozinho, por isso as duas variáveis têm de estar definidas no ambiente antes de arrancar:
-
-```bash
-cd raspberry-pi
-export PI_ADMIN_SECRET=...
-export PI_SESSION_SECRET=...
-python3 main.py
-```
