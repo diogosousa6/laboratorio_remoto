@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<link rel="shortcut icon" href="/static/favicon.ico">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório Remoto de Microcontroladores</title>
+<link href="static/css/sub_main.css" rel="stylesheet" type="text/css">
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      
+
+   <h5>Programar ATmega remotamente</h5>
+   
+   <form method = "POST" enctype = "multipart/form-data" >
+      <div>
+         <input type = "file" name = "file" class="file_form"/>
+      </div>
+      <div class="upload_button">
+         <button style="background: yellow; color: black; border-radius: 5px;" type="submit" class="upload_button">
+             <i style="background: yellow; color: black;" class="fa fa-bolt fa-1x"></i> Programar
+         </button>
+         
+      {% if FlashStatus == 1 %}
+        <font color=#2ECC71>  &nbsp; Flash OK </font> 
+      {% elif FlashStatus == 0 %}
+        <font color=#E74C3C>  &nbsp; Flash NOK </font> 
+      {% else %}
+      
+         {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                    {% for message in messages %}
+                     &nbsp; {{ message }}
+                    {% endfor %}
+            {% endif %}
+         {% endwith %}
+         
+      {% endif %}
+         
+         
+      </div>
+   </form> 
+   
+   <div class="txt_area">
+      
+      
+      {% if FlashStatus == 1 %}
+         <textarea name="upload_log" readonly style="background-color:#ABEBC6;"> {{ FlashTxt }}</textarea>
+      {% elif FlashStatus == 0 %}
+        <textarea name="upload_log" readonly style="background-color:#EC7063;"> {{ FlashTxt }}</textarea>
+      
+      {% else %}
+         <textarea name="upload_log" readonly style="background-color:#FDFEFE;"> Clean </textarea>
+      {% endif %}
+      
+      
+      
+
+   </div>
+
+
+</html>

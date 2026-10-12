@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<link rel="shortcut icon" href="/static/favicon.ico">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório Remoto de Microcontroladores</title>
+<link href="static/css/sub_main.css" rel="stylesheet" type="text/css">
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      
+   {% with messages = get_flashed_messages() %}
+      {% if messages %}
+           <ul class="flashes">
+              {% for message in messages %}
+               <div class="message_flash">{{ message }}</div>
+              {% endfor %}
+          </ul>
+      {% endif %}
+   {% endwith %}
+
+	<h3>Ativação remota de entradas/saídas</h3>
+	
+
+
+    {% for SW in SW_list %}
+    
+        {% if SW_list[SW].state == True %}
+        <form method="post" class="IOswitch">
+			<button style="color: black; border-radius: 5px;" name="SW_click" value="{{ SW_list[SW].name }}" type="submit" class="IOswitch">
+				 <i id="icon-{{ SW_list[SW].name }}" style="color: rgb(156,28,36); cursor: pointer" class="fa fa-toggle-on fa-2x IOswitch"></i> {{ SW_list[SW].name }}
+			</button>
+        </form>
+        {% else %}
+        <form method="post" class="IOswitch">
+			<button style="color: black; border-radius: 5px;" name="SW_click" value="{{ SW_list[SW].name }}" type="submit" class="IOswitch">
+				 <i id="icon-{{ SW_list[SW].name }}" style="color: rgb(156,28,36); cursor: pointer" class="fa fa-toggle-off fa-2x IOswitch"></i> {{ SW_list[SW].name }}
+			</button>
+        </form>
+        {% endif %}
+
+    {% endfor %}
+    
+    <div class="slidecontainer">
+		
+		<FORM method="post" id="slider">
+		<P>
+		<input type="range" name="DAC1" min="0" max="4095" value={{ DAC1Value}} class="slider" id="dac_range">
+		<p>Value: <span id="dac_atual_value"></span>/4095 (<span id="dac_percentage"></span>)% Vout: <span id="dac_voltage"></span>V</p><br>
+		</P>
+		</FORM>
+	  
+	</div>
+	
+<script>	
+	var slider = document.getElementById("dac_range");
+	var output = document.getElementById("dac_atual_value");
+	var output_percentage = document.getElementById("dac_percentage");
+	var output_voltage = document.getElementById("dac_voltage");
+	output.innerHTML = slider.value;
+	
+	window.onload =  function() {
+	  output.innerHTML = '{{ DAC1Value}}';
+	  output_percentage.innerHTML = (('{{ DAC1Value}}'/4095)*100.0).toFixed(1);
+	  output_voltage.innerHTML = (('{{ DAC1Value}}'/4095)*5.00).toFixed(2);
+	}
+	
+
+	slider.oninput = function() {
+	  output.innerHTML = this.value;
+	  output_percentage.innerHTML = ((this.value/4095)*100.0).toFixed(1);
+	  output_voltage.innerHTML = ((this.value/4095)*5.00).toFixed(2);
+	}
+	
+
+	slider.onmouseup = function () {
+	  document.getElementById("slider").submit();
+	}
+
+	// ---------------------------------------------------------------
+	// Atualização automática do estado — sem isto, uma alteração feita
+	// pelo admin (switch ou DAC) só aparecia aqui depois de dar refresh.
+	// Vai buscar o estado real ao Pi de X em X segundos e atualiza os
+	// ícones/slider sem recarregar a página.
+	// ---------------------------------------------------------------
+	var utilizadorId = "{{ UtilizadorId }}";
+	var aArrastarSlider = false;
+	slider.addEventListener("mousedown", function () { aArrastarSlider = true; });
+	slider.addEventListener("touchstart", function () { aArrastarSlider = true; });
+	document.addEventListener("mouseup", function () { aArrastarSlider = false; });
+	document.addEventListener("touchend", function () { aArrastarSlider = false; });
+
+	function atualizarEstado() {
+		if (!utilizadorId || utilizadorId === "None") return;
+		fetch("/api/estado-live?utilizador_id=" + encodeURIComponent(utilizadorId))
+			.then(function (resposta) { return resposta.ok ? resposta.json() : null; })
+			.then(function (dados) {
+				if (!dados || !dados.switches) return;
+
+				for (var chave in dados.switches) {
+					var sw = dados.switches[chave];
+					var icone = document.getElementById("icon-" + sw.name);
+					if (!icone) continue;
+					if (sw.state) {
+						icone.classList.remove("fa-toggle-off");
+						icone.classList.add("fa-toggle-on");
+					} else {
+						icone.classList.remove("fa-toggle-on");
+						icone.classList.add("fa-toggle-off");
+					}
+				}
+
+				// Não mexer no slider enquanto o aluno o estiver a arrastar.
+				if (!aArrastarSlider && typeof dados.dac_value === "number" && String(dados.dac_value) !== slider.value) {
+					slider.value = dados.dac_value;
+					output.innerHTML = dados.dac_value;
+					output_percentage.innerHTML = ((dados.dac_value / 4095) * 100.0).toFixed(1);
+					output_voltage.innerHTML = ((dados.dac_value / 4095) * 5.00).toFixed(2);
+				}
+			})
+			.catch(function () { /* falha silenciosa — tenta outra vez no próximo ciclo */ });
+	}
+
+	setInterval(atualizarEstado, 5000);
+</script>
+	
+
+ 
+</html>

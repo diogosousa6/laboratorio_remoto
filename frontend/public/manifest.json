@@ -1,0 +1,15 @@
+{
+  "short_name": "MICMIC Lab",
+  "name": "Laboratório Remoto de Microcontroladores",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "32x32"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

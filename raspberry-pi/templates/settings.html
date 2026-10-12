@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+<link rel="shortcut icon" href="/static/favicon.ico">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratório Remoto de Microcontroladores</title>
+<link href="static/css/sub_main.css" rel="stylesheet" type="text/css">
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      
+   {% with messages = get_flashed_messages() %}
+      {% if messages %}
+           <ul class="flashes">
+              {% for message in messages %}
+               <div class="message_flash">{{ message }}</div>
+              {% endfor %}
+          </ul>
+      {% endif %}
+   {% endwith %}
+
+	<h3>Configurações</h3>
+	
+    
+    <div class="conf">
+	<b>Upload Folder:</b> {{UploadFolder}} 
+	</div>
+	
+	<div class="conf">
+	<b>AVRDUDE config file:</b> {{AVRDUDE_conf}} 
+	</div>
+	
+	<div class="conf">
+	<b>ATMEGA chip:</b> {{ATMEGAchip}} 
+	</div>
+	
+	<div class="conf">
+	<b>AVR LFuse:</b> {{LFuse}} 
+	</div>
+	
+	<div class="conf">
+	<b>AVR HFuse:</b> {{HFuse}} 
+	</div>
+	
+	<div class="conf">
+	<b>AVR EFuse:</b> {{EFuse}} 
+	</div>
+	
+	<div class="conf">
+	<b>MCP23008 I2C adress:</b> {{MCP23008_adress}} 
+	</div>
+	
+	<div class="conf">
+	<b>MCP4725 I2C address:</b> {{MCP4725_address}} 
+	</div>
+	
+	<div class="conf">
+	<b>Serial Port Name:</b> {{SerialPort}} 
+	</div>
+	
+
+ 
+</html>

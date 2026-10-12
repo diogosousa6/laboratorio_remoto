@@ -1,0 +1,14 @@
+# credenciais
+.env
+.env.local
+
+# dependencias e compilados
+node_modules/
+build/
+__pycache__/
+*.pyc
+
+# gerados em execucao
+nohup.out
+*.log
+uploaded_files/
